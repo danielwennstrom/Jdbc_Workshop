@@ -44,7 +44,7 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
     }
 
     @Override
-    public void deleteById(int id) throws SQLException {
+    public void deleteByCode(String countryCode) throws SQLException {
 
     }
 }

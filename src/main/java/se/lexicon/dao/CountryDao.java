@@ -16,7 +16,7 @@ public interface CountryDao {
 
     List<Country> findByRegion(String region) throws SQLException;
 
-    List<Country> findByCapital(String capital) throws SQLException;
+    List<Country> findByCapital(int capitalId) throws SQLException;
 
     List<Country> findAll() throws SQLException;
 
@@ -24,5 +24,5 @@ public interface CountryDao {
 
     void update(Country country) throws SQLException;
 
-    void deleteById(int id) throws SQLException;
+    void deleteByCode(String countryCode) throws SQLException;
 }

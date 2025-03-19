@@ -18,5 +18,5 @@ public interface CountryLanguageDao {
 
     void update(CountryLanguage language) throws SQLException;
 
-    void deleteById(int id) throws SQLException;
+    void deleteByCode(String code) throws SQLException;
 }
