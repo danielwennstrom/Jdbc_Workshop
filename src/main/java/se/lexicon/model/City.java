@@ -60,12 +60,11 @@ public class City {
 
     @Override
     public String toString() {
-        return "City{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", countryCode='" + countryCode + '\'' +
-                ", district='" + district + '\'' +
-                ", population=" + population +
-                '}';
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Name: ").append(name).append("       ").append("Country Code: ").append(countryCode).append("\n");
+        sb.append("District: ").append(district).append("      ").append("Population: ").append(population).append("\n");
+
+        return sb.toString();
     }
 }

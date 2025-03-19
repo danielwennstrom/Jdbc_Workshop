@@ -4,6 +4,7 @@ import se.lexicon.dao.CityDaoImpl;
 import se.lexicon.model.City;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -34,48 +35,23 @@ public class Main {
                     System.out.println("3) Language");
                     switch (scanner.nextLine()) {
                         case "1":
-                            int id;
-                            String option = "ID";
-                            Optional<City> city = Optional.empty();
-                            List<City> cities;
-
                             System.out.println("Search by... (or q to return): ");
                             System.out.println("1) ID");
                             System.out.println("2) Name");
                             System.out.println("3) Country Code");
-                            System.out.println("4) List all");
+                            System.out.println("4) All");
                             switch (scanner.nextLine()) {
                                 case "1":
-                                    id = promptForIntInput(option, scanner);
-                                    city = cityDao.findById(id);
+                                    handleCitySearch("ID", scanner, cityDao);
                                     break;
                                 case "2":
-                                    option = "Name";
-                                    String name = promptForStringInput(option, scanner);
-                                    cities = cityDao.findByName(name);
-                                    displayCitySearchResults(cities);
-
-                                    option = "ID";
-                                    id = promptForIntInput(option, scanner);
-                                    displayCity(city, cityDao, id);
+                                    handleCitySearch("Name", scanner, cityDao);
                                     break;
                                 case "3":
-                                    option = "Country Code";
-                                    String countryCode = promptForStringInput(option, scanner);
-                                    cities = cityDao.findByCode(countryCode);
-                                    displayCitySearchResults(cities);
-
-
-                                    id = promptForIntInput(option, scanner);
-                                    displayCity(city, cityDao, id);
+                                    handleCitySearch("Country Code", scanner, cityDao);
                                     break;
                                 case "4":
-                                    cities = cityDao.findAll();
-                                    displayCitySearchResults(cities);
-
-                                    option = "ID";
-                                    id = promptForIntInput(option, scanner);
-                                    displayCity(city, cityDao, id);
+                                    handleCitySearch("All", scanner, cityDao);
                                     break;
                                 case "q":
                                     return;
@@ -108,9 +84,52 @@ public class Main {
         }
     }
 
-    private static void displayCity(Optional<City> city, CityDaoImpl cityDao, int id) throws SQLException {
-        city = cityDao.findById(id);
-        System.out.println(city);
+    private static Optional<Integer> handleCitySearch(String searchType, Scanner scanner, CityDaoImpl cityDao) throws SQLException {
+        List<City> cities = new ArrayList<>();
+
+        switch (searchType) {
+            case "ID":
+                Optional<City> city;
+                int id = promptForInput("ID", scanner, Integer.class);
+                city = cityDao.findById(id);
+                displayCity(city);
+                return Optional.of(id);
+            case "Name":
+                String name = promptForInput("Name", scanner, String.class);
+                cities = cityDao.findByName(name);
+                break;
+            case "Country Code":
+                String countryCode = promptForInput("Country Code", scanner, String.class);
+                cities = cityDao.findByCode(countryCode);
+                break;
+            case "All":
+                cities = cityDao.findAll();
+                break;
+        }
+
+        if (cities.isEmpty()) {
+            System.out.println("No results found.");
+
+            return Optional.empty();
+        }
+
+        if (cities.size() == 1) {
+            displayCity(Optional.of(cities.get(0)));
+
+            return Optional.of(cities.get(0).getId());
+        }
+
+        displayCitySearchResults(cities);
+        int id = promptForInput("ID", scanner, Integer.class);
+        Optional<City> selectedCity = cityDao.findById(id);
+        displayCity(selectedCity);
+
+        return Optional.of(id);
+    }
+
+
+    private static void displayCity(Optional<City> city) throws SQLException {
+        city.ifPresent(System.out::println);
     }
 
     private static void displayCitySearchResults(List<City> cities) {
@@ -119,17 +138,27 @@ public class Main {
         }
     }
 
-    private static int promptForIntInput(String option, Scanner scanner) {
+    private static <T> T promptForInput(String option, Scanner scanner, Class<T> type) {
         System.out.printf("Enter %s: \n", option);
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        return id;
-    }
 
-    private static String promptForStringInput(String option, Scanner scanner) {
-        String line;
-        System.out.printf("Enter %s: \n", option);
-        line = scanner.nextLine();
-        return line;
+        if (type == Integer.class) {
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.next();
+            }
+
+            int input = scanner.nextInt();
+            scanner.nextLine();
+
+            return type.cast(input);
+        }
+
+        if (type == String.class) {
+            String input = scanner.nextLine();
+
+            return type.cast(input);
+        }
+
+        return null;
     }
 }
