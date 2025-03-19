@@ -1,30 +1,16 @@
 package se.lexicon.model;
 
 public class CountryLanguage {
-    private int id;
     private String countryCode;
     private String language;
     private boolean isOfficial;
+    private double percentage;
 
-    public CountryLanguage(int id, String countryCode, String language, boolean isOfficial) {
-        this.id = id;
+    public CountryLanguage(String countryCode, String language, boolean isOfficial, double percentage) {
         this.countryCode = countryCode;
         this.language = language;
         this.isOfficial = isOfficial;
-    }
-
-    public CountryLanguage(String countryCode, String language, boolean isOfficial) {
-        this.countryCode = countryCode;
-        this.language = language;
-        this.isOfficial = isOfficial;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.percentage = percentage;
     }
 
     public String getCountryCode() {
@@ -49,5 +35,13 @@ public class CountryLanguage {
 
     public void setOfficial(boolean official) {
         isOfficial = official;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
     }
 }

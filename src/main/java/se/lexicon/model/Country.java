@@ -1,7 +1,6 @@
 package se.lexicon.model;
 
 public class Country {
-    private int id;
     private String code;
     private String name;
     private String continent;
@@ -17,28 +16,6 @@ public class Country {
     private String headOfState;
     private int capital;
     private String code2;
-
-    public Country(int id, String code, String name, String continent, String region,
-                   double surfaceArea, int indepYear, int population, double lifeExpectancy,
-                   double gnp, double gnpOld, String localName, String governmentForm,
-                   String headOfState, int capital, String code2) {
-        this.id = id;
-        this.code = code;
-        this.name = name;
-        this.continent = continent;
-        this.region = region;
-        this.surfaceArea = surfaceArea;
-        this.indepYear = indepYear;
-        this.population = population;
-        this.lifeExpectancy = lifeExpectancy;
-        this.gnp = gnp;
-        this.gnpOld = gnpOld;
-        this.localName = localName;
-        this.governmentForm = governmentForm;
-        this.headOfState = headOfState;
-        this.capital = capital;
-        this.code2 = code2;
-    }
 
     public Country(String code, String name, String continent, String region,
                    double surfaceArea, int indepYear, int population, double lifeExpectancy,
@@ -59,14 +36,6 @@ public class Country {
         this.headOfState = headOfState;
         this.capital = capital;
         this.code2 = code2;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getCode() {
