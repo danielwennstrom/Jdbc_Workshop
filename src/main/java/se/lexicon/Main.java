@@ -28,6 +28,20 @@ public class Main {
             System.out.println("4) Delete...");
             switch (scanner.nextLine()) {
                 case "1":
+                    displayAvailableDataMenu();
+                    switch (scanner.nextLine()) {
+                        case "1":
+                            handleCityCreate(scanner, cityDao);
+                            break;
+                        case "2":
+                            break;
+                        case "3":
+                            break;
+                        case "q":
+                            break;
+                        default:
+                            System.out.println("Invalid option. Please try again.");
+                    }
                     break;
                 case "2":
                     displayAvailableDataMenu();
@@ -120,6 +134,16 @@ public class Main {
                     System.out.println("Invalid option. Please try again.");
             }
         }
+    }
+
+    private static void handleCityCreate(Scanner scanner, CityDaoImpl cityDao) throws SQLException {
+        String name = promptForInput("Name", scanner, String.class);
+        String countryCode = promptForInput("Country Code", scanner, String.class);
+        String district = promptForInput("District", scanner, String.class);
+        int population = promptForInput("Population", scanner, Integer.class);
+
+        City city = new City(name, countryCode, district, population);
+        cityDao.save(city);
     }
 
     private static void handleCityUpdate(Scanner scanner, Optional<City> selectedCity, CityDaoImpl cityDao) throws SQLException {

@@ -18,6 +18,13 @@ public class City {
         this.population = population;
     }
 
+    public City(String name, String countryCode, String district, int population) {
+        this.name = name;
+        this.countryCode = countryCode;
+        this.district = district;
+        this.population = population;
+    }
+
     public int getId() {
         return id;
     }
