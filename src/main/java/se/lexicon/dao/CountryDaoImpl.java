@@ -1,15 +1,32 @@
 package se.lexicon.dao;
 
 import se.lexicon.model.Country;
+import se.lexicon.model.CountryLanguage;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 public class CountryDaoImpl implements CountryDao {
-    @Override
-    public Optional<Country> findById(int id) throws SQLException {
-        return Optional.empty();
+    private Country mapRow(ResultSet resultSet) throws SQLException {
+        return new Country(
+                resultSet.getString("Code"),
+                resultSet.getString("Name"),
+                resultSet.getString("Continent"),
+                resultSet.getString("Region"),
+                resultSet.getDouble("SurfaceArea"),
+                resultSet.getInt("IndepYear"),
+                resultSet.getLong("Population"),
+                resultSet.getDouble("LifeExpectancy"),
+                resultSet.getDouble("GNP"),
+                resultSet.getDouble("GNPOld"),
+                resultSet.getString("LocalName"),
+                resultSet.getString("GovernmentForm"),
+                resultSet.getString("HeadOfState"),
+                resultSet.getInt("Capital"),
+                resultSet.getString("Code2")
+        );
     }
 
     @Override

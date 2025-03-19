@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class CountryLanguageDaoImpl implements CountryLanguageDao {
-
     private CountryLanguage mapRow(ResultSet resultSet) throws SQLException {
         return new CountryLanguage(
                 resultSet.getString("CountryCode"),
@@ -17,11 +16,6 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
                 resultSet.getBoolean("IsOfficial"),
                 resultSet.getDouble("Percentage")
         );
-    }
-
-    @Override
-    public Optional<CountryLanguage> findById(int id) throws SQLException {
-        return Optional.empty();
     }
 
     @Override

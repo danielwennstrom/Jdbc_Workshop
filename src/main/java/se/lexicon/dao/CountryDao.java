@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CountryDao {
-    Optional<Country> findById(int id) throws SQLException;
-
     List<Country> findByCode(String code) throws SQLException;
 
     List<Country> findByName(String name) throws SQLException;

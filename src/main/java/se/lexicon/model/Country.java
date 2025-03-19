@@ -7,7 +7,7 @@ public class Country {
     private String region;
     private double surfaceArea;
     private int indepYear;
-    private int population;
+    private long population;
     private double lifeExpectancy;
     private double gnp;
     private double gnpOld;
@@ -18,7 +18,7 @@ public class Country {
     private String code2;
 
     public Country(String code, String name, String continent, String region,
-                   double surfaceArea, int indepYear, int population, double lifeExpectancy,
+                   double surfaceArea, int indepYear, long population, double lifeExpectancy,
                    double gnp, double gnpOld, String localName, String governmentForm,
                    String headOfState, int capital, String code2) {
         this.code = code;
@@ -86,11 +86,11 @@ public class Country {
         this.indepYear = indepYear;
     }
 
-    public int getPopulation() {
+    public long getPopulation() {
         return population;
     }
 
-    public void setPopulation(int population) {
+    public void setPopulation(long population) {
         this.population = population;
     }
 
