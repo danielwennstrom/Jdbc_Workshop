@@ -85,6 +85,31 @@ public class Main {
                     break;
                 case "4":
                     displayAvailableDataMenu();
+                    switch (scanner.nextLine()) {
+                        case "1":
+                            selectedCity = handleCitySearchReturn(scanner, selectedCity, cityDao);
+                            if (!selectedCity.isPresent())
+                                break;
+
+                            selectedCity.ifPresent(city ->
+                                    System.out.printf("Are you sure you want to DELETE %s? Y/N\n",
+                                    city.getName()));
+                            if (scanner.nextLine().equalsIgnoreCase("y"))
+                                cityDao.deleteById(selectedCity
+                                        .orElseThrow(() -> new IllegalArgumentException("City not found."))
+                                        .getId());
+                            else
+                                return;
+                            break;
+                        case "2":
+                            break;
+                        case "3":
+                            break;
+                        case "q":
+                            break;
+                        default:
+                            System.out.println("Invalid option. Please try again.");
+                    }
                     break;
                 case "q":
                     running = false;
