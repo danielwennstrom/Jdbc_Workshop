@@ -21,7 +21,7 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
     }
 
     @Override
-    public CountryLanguage findByCode(String code) throws SQLException {
+    public List<CountryLanguage> findByCode(String code) throws SQLException {
         String query = "SELECT * FROM countrylanguage WHERE CountryCode = ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -29,12 +29,14 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
             preparedStatement.setString(1, code);
 
             ResultSet resultSet = preparedStatement.executeQuery();
+            List<CountryLanguage> languages = new ArrayList<>();
 
-            if (resultSet.next()) {
-                return mapRow(resultSet);
-            } else {
-                return null;
+            while (resultSet.next()) {
+                CountryLanguage language = mapRow(resultSet);
+                languages.add(language);
             }
+
+            return languages;
         }
     }
 

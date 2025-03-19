@@ -157,4 +157,32 @@ public class Country {
     public void setCode2(String code2) {
         this.code2 = code2;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Country Details:\n" +
+                        "-------------------------------------\n" +
+                        "Code            : %s\n" +
+                        "Name            : %s\n" +
+                        "Continent       : %s\n" +
+                        "Region          : %s\n" +
+                        "Surface Area    : %.2f km²\n" +
+                        "Independence    : %s\n" +
+                        "Population      : %,d\n" +
+                        "Life Expectancy : %.1f years\n" +
+                        "GNP             : %.2f\n" +
+                        "GNP (Old)       : %.2f\n" +
+                        "Local Name      : %s\n" +
+                        "Government      : %s\n" +
+                        "Head of State   : %s\n" +
+                        "Capital ID      : %s\n" +
+                        "Code (Alt)      : %s\n",
+                code, name, continent, region, surfaceArea,
+                indepYear,
+                population, lifeExpectancy, gnp, gnpOld,
+                localName, governmentForm, headOfState,
+                (capital != 0 ? capital : "N/A"), code2
+        );
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CountryLanguageDao {
-    CountryLanguage findByCode(String code) throws SQLException;
+    List<CountryLanguage> findByCode(String code) throws SQLException;
 
     List<CountryLanguage> findByLanguageName(String name) throws SQLException;
 

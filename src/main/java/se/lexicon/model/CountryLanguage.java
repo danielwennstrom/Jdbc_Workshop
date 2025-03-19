@@ -44,4 +44,21 @@ public class CountryLanguage {
     public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Country Language Details:\n" +
+                        "-------------------------------------\n" +
+                        "Country Code   : %s\n" +
+                        "Language       : %s\n" +
+                        "Official Status: %s\n" +
+                        "Percentage     : %.2f%%\n",
+                countryCode,
+                language,
+                (isOfficial ? "Official" : "Not Official"),
+                percentage
+        );
+
+    }
 }
