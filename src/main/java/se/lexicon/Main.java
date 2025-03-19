@@ -14,6 +14,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Represents the entry point of the application.
  */
+
+//TODO: handle Country.capital better
+//TODO: maybe handle deletions of primary keys better, will currently crash when a class relies on CountryCode/Code
+//TODO: more robust exception handling? who knows
+
 public class Main {
     static CityDaoImpl cityDao = new CityDaoImpl();
     static CountryDaoImpl countryDao = new CountryDaoImpl();
@@ -71,11 +76,13 @@ public class Main {
                     displayAvailableDataMenu();
                     switch (scanner.nextLine()) {
                         case "1":
-//                            handleCityUpdate(scanner, selectedCity);
+                            handleUpdate(scanner, City.class);
                             break;
                         case "2":
+                            handleUpdate(scanner, Country.class);
                             break;
                         case "3":
+                            handleUpdate(scanner, CountryLanguage.class);
                             break;
                         case "q":
                             break;
@@ -87,23 +94,13 @@ public class Main {
                     displayAvailableDataMenu();
                     switch (scanner.nextLine()) {
                         case "1":
-//                            selectedCity = handleCitySearchReturn(scanner, selectedCity);
-//                            if (!selectedCity.isPresent())
-//                                break;
-//
-//                            selectedCity.ifPresent(city ->
-//                                    System.out.printf("Are you sure you want to DELETE %s? Y/N\n",
-//                                            city.getName()));
-//                            if (scanner.nextLine().equalsIgnoreCase("y"))
-//                                cityDao.deleteById(selectedCity
-//                                        .orElseThrow(() -> new IllegalArgumentException("City not found."))
-//                                        .getId());
-//                            else
-//                                return;
+                            handleDelete(scanner, City.class);
                             break;
                         case "2":
+                            handleDelete(scanner, Country.class);
                             break;
                         case "3":
+                            handleDelete(scanner, CountryLanguage.class);
                             break;
                         case "q":
                             break;
@@ -200,55 +197,266 @@ public class Main {
         }
     }
 
-//    private static void handleCityUpdate(Scanner scanner, Optional<City> selectedCity) throws SQLException {
-//        selectedCity = handleCitySearchReturn(scanner, selectedCity);
-//        if (!selectedCity.isPresent())
-//            return;
-//
-//        while (true) {
-//            System.out.println("Update... (or s to save, q to return)");
-//            System.out.println("1) Name");
-//            System.out.println("2) Country Code");
-//            System.out.println("3) District");
-//            System.out.println("4) Population");
-//            switch (scanner.nextLine()) {
-//                case "1":
-//                    selectedCity.map(City::getName).ifPresent(System.out::println);
-//                    String name = promptForInput("New name", scanner, String.class);
-//                    selectedCity.ifPresent(city -> city.setName(name));
-//                    break;
-//                case "2":
-//                    selectedCity.map(City::getCountryCode).ifPresent(System.out::println);
-//                    String countryCode = promptForInput("New country code", scanner, String.class);
-//                    selectedCity.ifPresent(city -> city.setCountryCode(countryCode));
-//                    break;
-//                case "3":
-//                    selectedCity.map(City::getDistrict).ifPresent(System.out::println);
-//                    String district = promptForInput("New district", scanner, String.class);
-//                    selectedCity.ifPresent(city -> city.setDistrict(district));
-//                    break;
-//                case "4":
-//                    selectedCity.map(City::getPopulation).ifPresent(System.out::println);
-//                    int population = promptForInput("New population", scanner, Integer.class);
-//                    selectedCity.ifPresent(city -> city.setPopulation(population));
-//                    break;
-//                case "s":
-//                    selectedCity.ifPresent(city -> {
-//                        try {
-//                            cityDao.update(city);
-//                        } catch (SQLException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    });
-//
-//                    return;
-//                case "q":
-//                    return;
-//                default:
-//                    System.out.println("Invalid option. Please try again.");
-//            }
-//        }
-//    }
+    private static <T> void handleDelete(Scanner scanner, Class<T> deleteType) throws SQLException {
+        Object obj = handleSearchMenu(scanner, deleteType, false);
+
+        if (obj == null)
+            return;
+
+        if (deleteType == City.class) {
+            Optional<City> selectedCity = (obj instanceof Optional<?>)
+                    ? (Optional<City>) obj
+                    : Optional.ofNullable((City) obj);
+
+            selectedCity.ifPresent(city ->
+                    System.out.printf("Are you sure you want to DELETE %s? Y/N\n",
+                            city.getName()));
+            if (scanner.nextLine().equalsIgnoreCase("y"))
+                cityDao.deleteById(selectedCity
+                        .orElseThrow(() -> new IllegalArgumentException("City not found."))
+                        .getId());
+            else
+                return;
+        }
+
+        if (deleteType == Country.class) {
+            Country selectedCountry = (Country) obj;
+
+            System.out.printf("Are you sure you want to DELETE %s? Y/N\n", selectedCountry.getName());
+            if (scanner.nextLine().equalsIgnoreCase("y"))
+                countryDao.deleteByCode(selectedCountry
+                        .getCode());
+            else
+                return;
+        }
+
+        if (deleteType == CountryLanguage.class) {
+            CountryLanguage selectedLanguage = (CountryLanguage) obj;
+
+            System.out.printf("Are you sure you want to DELETE %s? Y/N\n", selectedLanguage.getLanguage());
+            if (scanner.nextLine().equalsIgnoreCase("y"))
+                countryLanguageDao.deleteByCodeAndName(selectedLanguage.getCountryCode(), selectedLanguage.getLanguage());
+        }
+    }
+
+    private static <T> void handleUpdate(Scanner scanner, Class<T> updateType) throws SQLException {
+        Object obj = handleSearchMenu(scanner, updateType, false);
+        String fakeForeignKey = "";
+
+        if (obj == null)
+            return;
+
+        if (updateType == CountryLanguage.class)
+            fakeForeignKey = ((CountryLanguage) obj).getLanguage();
+
+        while (true) {
+            System.out.println("Update... (or s to save, q to return)");
+            if (updateType == City.class) {
+                Optional<City> city = (obj instanceof Optional<?>)
+                        ? (Optional<City>) obj
+                        : Optional.ofNullable((City) obj);
+
+                System.out.println("1) Name");
+                System.out.println("2) Country Code");
+                System.out.println("3) District");
+                System.out.println("4) Population");
+
+                switch (scanner.nextLine()) {
+                    case "1":
+                        city.map(City::getName).ifPresent(System.out::println);
+                        String name = promptForInput("New name", scanner, String.class);
+                        city.ifPresent(c -> c.setName(name));
+                        break;
+                    case "2":
+                        city.map(City::getCountryCode).ifPresent(System.out::println);
+                        String countryCode = promptForInput("New country code", scanner, String.class);
+                        city.ifPresent(c -> c.setCountryCode(countryCode));
+                        break;
+                    case "3":
+                        city.map(City::getDistrict).ifPresent(System.out::println);
+                        String district = promptForInput("New district", scanner, String.class);
+                        city.ifPresent(c -> c.setDistrict(district));
+                        break;
+                    case "4":
+                        city.map(City::getPopulation).ifPresent(System.out::println);
+                        int population = promptForInput("New population", scanner, Integer.class);
+                        city.ifPresent(c -> c.setPopulation(population));
+                        break;
+                    case "s":
+                        handleDisplay(city);
+                        System.out.println("Does this look correct? Y/N");
+                        if (scanner.nextLine().equalsIgnoreCase("y")) {
+                            city.ifPresent(c -> {
+                                try {
+                                    cityDao.update(c);
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
+
+                        return;
+                    case "q":
+                        return;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                }
+            }
+
+            if (updateType == Country.class) {
+                Country country = (Country) obj;
+
+                System.out.println("1) Name");
+                System.out.println("2) Continent");
+                System.out.println("3) Region");
+                System.out.println("4) Surface Area");
+                System.out.println("5) Independence Year");
+                System.out.println("6) Population");
+                System.out.println("7) Life Expectancy");
+                System.out.println("8) GNP");
+                System.out.println("9) GNP (Old)");
+                System.out.println("10) Local Name");
+                System.out.println("11) Government Form");
+                System.out.println("12) Head of State");
+                System.out.println("13) Capital ID");
+                System.out.println("14) Country Code (2-letter)");
+
+                switch (scanner.nextLine()) {
+                    case "1":
+                        System.out.println(country.getName());
+                        String name = promptForInput("New name", scanner, String.class);
+                        country.setName(name);
+                        break;
+                    case "2":
+                        System.out.println(country.getContinent());
+                        String continent = promptForInput("New continent", scanner, String.class);
+                        country.setContinent(continent);
+                        break;
+                    case "3":
+                        System.out.println(country.getRegion());
+                        String region = promptForInput("New region", scanner, String.class);
+                        country.setRegion(region);
+                        break;
+                    case "4":
+                        System.out.println(country.getSurfaceArea());
+                        double surfaceArea = promptForInput("New surface area", scanner, Double.class);
+                        country.setSurfaceArea(surfaceArea);
+                        break;
+                    case "5":
+                        System.out.println(country.getIndepYear());
+                        int indepYear = promptForInput("New independence year", scanner, Integer.class);
+                        country.setIndepYear(indepYear);
+                        break;
+                    case "6":
+                        System.out.println(country.getPopulation());
+                        long population = promptForInput("New population", scanner, Long.class);
+                        country.setPopulation(population);
+                        break;
+                    case "7":
+                        System.out.println(country.getLifeExpectancy());
+                        double lifeExpectancy = promptForInput("New name", scanner, Double.class);
+                        country.setLifeExpectancy(lifeExpectancy);
+                        break;
+                    case "8":
+                        System.out.println(country.getGnp());
+                        double gnp = promptForInput("New GNP", scanner, Double.class);
+                        country.setGnp(gnp);
+                        break;
+                    case "9":
+                        System.out.println(country.getGnpOld());
+                        double gnpOld = promptForInput("New GNP (old)", scanner, Double.class);
+                        country.setGnpOld(gnpOld);
+                        break;
+                    case "10":
+                        System.out.println(country.getLocalName());
+                        String localName = promptForInput("New local name", scanner, String.class);
+                        country.setLocalName(localName);
+                        break;
+                    case "11":
+                        System.out.println(country.getGovernmentForm());
+                        String governmentForm = promptForInput("New government form", scanner, String.class);
+                        country.setGovernmentForm(governmentForm);
+                        break;
+                    case "12":
+                        System.out.println(country.getHeadOfState());
+                        String headOfState = promptForInput("New Head of State", scanner, String.class);
+                        country.setHeadOfState(headOfState);
+                        break;
+                    case "13":
+                        System.out.println(country.getCapital());
+                        int capitalId = promptForInput("New capital ID", scanner, Integer.class);
+                        country.setCapital(capitalId);
+                        break;
+                    case "14":
+                        System.out.println(country.getCode2());
+                        String code2 = promptForInput("New 2-letter country code", scanner, String.class);
+                        country.setCode2(code2);
+                        break;
+                    case "s":
+                        handleDisplay(country);
+                        System.out.println("Does this look correct? Y/N");
+                        if (scanner.nextLine().equalsIgnoreCase("y")) {
+                            try {
+                                countryDao.update(country);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        return;
+                    case "q":
+                        return;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                        break;
+                }
+
+            }
+
+            if (updateType == CountryLanguage.class) {
+                CountryLanguage countryLanguage = (CountryLanguage) obj;
+
+                System.out.println("1) Language name");
+                System.out.println("2) Official status");
+                System.out.println("2) Percentage");
+
+                switch (scanner.nextLine()) {
+                    case "1":
+                        System.out.println(countryLanguage.getLanguage());
+                        String languageName = promptForInput("New language name", scanner, String.class);
+                        countryLanguage.setLanguage(languageName);
+                        break;
+                    case "2":
+                        System.out.println(countryLanguage.isOfficial());
+                        boolean isOfficial = promptForInput("New official status", scanner, Boolean.class);
+                        countryLanguage.setOfficial(isOfficial);
+                        break;
+                    case "3":
+                        System.out.println(countryLanguage.getPercentage());
+                        double percentage = promptForInput("New percentage", scanner, Double.class);
+                        countryLanguage.setPercentage(percentage);
+                        break;
+                    case "s":
+                        handleDisplay(countryLanguage);
+                        System.out.println("Does this look correct? Y/N");
+                        if (scanner.nextLine().equalsIgnoreCase("y")) {
+                            try {
+                                countryLanguageDao.update(countryLanguage, fakeForeignKey);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                        return;
+                    case "q":
+                        return;
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+    }
 
     private static <T> void handleDisplay(T displayType) throws SQLException {
         if (displayType == null) {
@@ -262,7 +470,8 @@ public class Main {
         }
     }
 
-    private static <T> Object handleSearchResults(Scanner scanner, Object data, Class<T> searchType, boolean displayResult) throws SQLException {
+    private static <T> Object handleSearchResults(Scanner scanner, Object data, Class<T> searchType,
+                                                  boolean displayResult) throws SQLException {
         Object result = null;
         AtomicInteger index = new AtomicInteger(1);
 
@@ -301,8 +510,7 @@ public class Main {
                 result = collection.stream()
                         .filter(obj -> obj instanceof City)
                         .filter(obj -> {
-                            boolean match = searchIndex.getAndIncrement() == id;
-                            return match;
+                            return searchIndex.getAndIncrement() == id;
                         })
                         .findFirst()
                         .orElse(null);
@@ -312,8 +520,7 @@ public class Main {
                 result = collection.stream()
                         .filter(obj -> obj instanceof Country)
                         .filter(obj -> {
-                            boolean match = searchIndex.getAndIncrement() == id;
-                            return match;
+                            return searchIndex.getAndIncrement() == id;
                         })
                         .findFirst()
                         .orElse(null);
@@ -323,22 +530,23 @@ public class Main {
                 result = collection.stream()
                         .filter(obj -> obj instanceof CountryLanguage)
                         .filter(obj -> {
-                            boolean match = searchIndex.getAndIncrement() == id;
-                            return match;
+                            return searchIndex.getAndIncrement() == id;
                         })
                         .findFirst()
                         .orElse(null);
             }
-
-            handleDisplay(result);
+            if (displayResult)
+                handleDisplay(result);
         } else {
-            handleDisplay(data);
+            if (displayResult)
+                handleDisplay(data);
         }
 
         return (result != null) ? result : data;
     }
 
-    private static <T> Object handleSearch(Scanner scanner, String option, Class<T> searchType, boolean displayResult) throws SQLException {
+    private static <T> Object handleSearch(Scanner scanner, String option, Class<T> searchType,
+                                           boolean displayResult) throws SQLException {
         if (searchType == City.class) {
             switch (option) {
                 case "ID":
@@ -397,7 +605,8 @@ public class Main {
         return null;
     }
 
-    private static <T> Object handleSearchMenu(Scanner scanner, Class<T> searchType, boolean displayResult) throws SQLException {
+    private static <T> Object handleSearchMenu(Scanner scanner, Class<T> searchType, boolean displayResult) throws
+            SQLException {
         if (searchType == City.class) {
             System.out.println("Search by... (or q to return): ");
             System.out.println("1) ID");

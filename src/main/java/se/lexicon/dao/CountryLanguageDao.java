@@ -1,11 +1,9 @@
 package se.lexicon.dao;
 
-import se.lexicon.model.City;
 import se.lexicon.model.CountryLanguage;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public interface CountryLanguageDao {
     List<CountryLanguage> findByCode(String code) throws SQLException;
@@ -16,7 +14,7 @@ public interface CountryLanguageDao {
 
     CountryLanguage save(CountryLanguage language) throws SQLException;
 
-    void update(CountryLanguage language) throws SQLException;
+    void update(CountryLanguage language, String oldLanguageName) throws SQLException;
 
-    void deleteByCode(String code) throws SQLException;
+    void deleteByCodeAndName(String code, String languageName) throws SQLException;
 }

@@ -103,9 +103,9 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
     }
 
     @Override
-    public void update(CountryLanguage language) throws SQLException {
+    public void update(CountryLanguage language, String oldLanguageName) throws SQLException {
         String query = "UPDATE countrylanguage SET Language = ?, IsOfficial = ?, Percentage = ?" +
-                " WHERE CountryCode = ?";
+                " WHERE CountryCode = ? AND Language = ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
@@ -113,7 +113,7 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
             preparedStatement.setBoolean(2, language.isOfficial());
             preparedStatement.setDouble(3, language.getPercentage());
             preparedStatement.setString(4, language.getCountryCode());
-            preparedStatement.setString(6, language.getCountryCode());
+            preparedStatement.setString(5, oldLanguageName);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -126,12 +126,13 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
     }
 
     @Override
-    public void deleteByCode(String countryCode) throws SQLException {
-        String query = "DELETE FROM countrylanguage WHERE CountryCode = ?";
+    public void deleteByCodeAndName(String countryCode, String languageName) throws SQLException {
+        String query = "DELETE FROM countrylanguage WHERE CountryCode = ? AND Language = ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, countryCode);
+            preparedStatement.setString(1, languageName);
 
             int rowsAffected = preparedStatement.executeUpdate();
 
