@@ -1,12 +1,19 @@
 package se.lexicon;
 
+import se.lexicon.dao.CityDaoImpl;
+import se.lexicon.model.City;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
  * Represents the entry point of the application.
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        CityDaoImpl cityDao = new CityDaoImpl();
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
 
@@ -27,7 +34,10 @@ public class Main {
                     System.out.println("3) Language");
                     switch (scanner.nextLine()) {
                         case "1":
-                            String option;
+                            int id;
+                            String option = "ID";
+                            Optional<City> city = Optional.empty();
+                            List<City> cities;
 
                             System.out.println("Search by... (or q to return): ");
                             System.out.println("1) ID");
@@ -36,18 +46,36 @@ public class Main {
                             System.out.println("4) List all");
                             switch (scanner.nextLine()) {
                                 case "1":
-                                    option = "ID";
-                                    int id = promptForIntInput(option, scanner);
+                                    id = promptForIntInput(option, scanner);
+                                    city = cityDao.findById(id);
                                     break;
                                 case "2":
                                     option = "Name";
                                     String name = promptForStringInput(option, scanner);
+                                    cities = cityDao.findByName(name);
+                                    displayCitySearchResults(cities);
+
+                                    option = "ID";
+                                    id = promptForIntInput(option, scanner);
+                                    displayCity(city, cityDao, id);
                                     break;
                                 case "3":
                                     option = "Country Code";
                                     String countryCode = promptForStringInput(option, scanner);
+                                    cities = cityDao.findByCode(countryCode);
+                                    displayCitySearchResults(cities);
+
+
+                                    id = promptForIntInput(option, scanner);
+                                    displayCity(city, cityDao, id);
                                     break;
                                 case "4":
+                                    cities = cityDao.findAll();
+                                    displayCitySearchResults(cities);
+
+                                    option = "ID";
+                                    id = promptForIntInput(option, scanner);
+                                    displayCity(city, cityDao, id);
                                     break;
                                 case "q":
                                     return;
@@ -77,6 +105,17 @@ public class Main {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
+        }
+    }
+
+    private static void displayCity(Optional<City> city, CityDaoImpl cityDao, int id) throws SQLException {
+        city = cityDao.findById(id);
+        System.out.println(city);
+    }
+
+    private static void displayCitySearchResults(List<City> cities) {
+        for (City c : cities) {
+            System.out.printf("%s) %s\n", c.getId(), c.getName());
         }
     }
 
