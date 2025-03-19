@@ -1,9 +1,7 @@
 package se.lexicon.dao;
 
 import se.lexicon.db.DBConnection;
-import se.lexicon.model.City;
 import se.lexicon.model.Country;
-import se.lexicon.model.CountryLanguage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class CountryDaoImpl implements CountryDao {
     private Country mapRow(ResultSet resultSet) throws SQLException {
