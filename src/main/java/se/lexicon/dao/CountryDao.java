@@ -13,6 +13,12 @@ public interface CountryDao {
 
     List<City> findByName(String name) throws SQLException;
 
+    List<City> findByContinent(String continent) throws SQLException;
+
+    List<City> findByRegion(String region) throws SQLException;
+
+    List<City> findByCapital(String capital) throws SQLException;
+
     List<City> findAll() throws SQLException;
 
     City save(City city) throws SQLException;

@@ -23,6 +23,21 @@ public class CountryDaoImpl implements CountryDao {
     }
 
     @Override
+    public List<City> findByContinent(String name) throws SQLException {
+        return List.of();
+    }
+
+    @Override
+    public List<City> findByRegion(String name) throws SQLException {
+        return List.of();
+    }
+
+    @Override
+    public List<City> findByCapital(String name) throws SQLException {
+        return List.of();
+    }
+
+    @Override
     public List<City> findAll() throws SQLException {
         return List.of();
     }

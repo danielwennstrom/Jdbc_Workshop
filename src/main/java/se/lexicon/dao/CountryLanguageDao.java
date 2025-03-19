@@ -11,7 +11,7 @@ public interface CountryLanguageDao {
 
     List<City> findByCode(String code) throws SQLException;
 
-    List<City> findByName(String name) throws SQLException;
+    List<City> findByLanguageName(String name) throws SQLException;
 
     List<City> findAll() throws SQLException;
 
