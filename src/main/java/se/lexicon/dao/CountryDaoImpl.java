@@ -51,11 +51,11 @@ public class CountryDaoImpl implements CountryDao {
 
     @Override
     public List<Country> findByName(String name) throws SQLException {
-        String query = "SELECT * FROM country WHERE Name = ?";
+        String query = "SELECT * FROM country WHERE Name LIKE ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, "%" + name + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Country> countries = new ArrayList<>();
@@ -71,11 +71,11 @@ public class CountryDaoImpl implements CountryDao {
 
     @Override
     public List<Country> findByContinent(String continent) throws SQLException {
-        String query = "SELECT * FROM country WHERE Continent = ?";
+        String query = "SELECT * FROM country WHERE Continent LIKE ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            preparedStatement.setString(1, continent);
+            preparedStatement.setString(1, "%" + continent + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Country> countries = new ArrayList<>();
@@ -91,11 +91,11 @@ public class CountryDaoImpl implements CountryDao {
 
     @Override
     public List<Country> findByRegion(String region) throws SQLException {
-        String query = "SELECT * FROM country WHERE Region = ?";
+        String query = "SELECT * FROM country WHERE Region LIKE ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            preparedStatement.setString(1, region);
+            preparedStatement.setString(1, "%" + region + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Country> countries = new ArrayList<>();

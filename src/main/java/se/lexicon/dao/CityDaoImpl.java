@@ -66,11 +66,11 @@ public class CityDaoImpl implements CityDao {
 
     @Override
     public List<City> findByName(String name) throws SQLException {
-        String query = "SELECT * FROM city WHERE Name = ?";
+        String query = "SELECT * FROM city WHERE Name LIKE ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, "%" + name + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<City> cities = new ArrayList<>();

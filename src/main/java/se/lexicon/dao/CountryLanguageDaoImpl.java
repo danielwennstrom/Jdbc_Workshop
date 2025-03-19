@@ -42,11 +42,11 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
 
     @Override
     public List<CountryLanguage> findByLanguageName(String name) throws SQLException {
-        String query = "SELECT * FROM countrylanguage WHERE Language = ?";
+        String query = "SELECT * FROM countrylanguage WHERE Language LIKE ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, "%" + name + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<CountryLanguage> languages = new ArrayList<>();
