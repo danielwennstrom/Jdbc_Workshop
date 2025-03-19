@@ -6,11 +6,11 @@ public class CountryLanguage {
     private String language;
     private boolean isOfficial;
 
-    public CountryLanguage(String countryCode, String language, boolean isOfficial, int id) {
+    public CountryLanguage(int id, String countryCode, String language, boolean isOfficial) {
+        this.id = id;
         this.countryCode = countryCode;
         this.language = language;
         this.isOfficial = isOfficial;
-        this.id = id;
     }
 
     public CountryLanguage(String countryCode, String language, boolean isOfficial) {
