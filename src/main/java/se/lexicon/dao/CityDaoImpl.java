@@ -136,6 +136,7 @@ public class CityDaoImpl implements CityDao {
             preparedStatement.setString(2, city.getCountryCode());
             preparedStatement.setString(3, city.getDistrict());
             preparedStatement.setInt(4, city.getPopulation());
+            preparedStatement.setInt(5, city.getId());
 
             int rowsAffected  = preparedStatement.executeUpdate();
 
