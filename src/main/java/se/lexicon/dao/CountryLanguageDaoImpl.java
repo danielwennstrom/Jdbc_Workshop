@@ -102,16 +102,16 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
 
     @Override
     public void update(CountryLanguage language) throws SQLException {
-        String query = "UPDATE countrylanguage SET CountryCode = ?," +
-                " Language = ?, IsOfficial = ?, Percentage = ? WHERE CountryCode = ?";
+        String query = "UPDATE countrylanguage SET Language = ?, IsOfficial = ?, Percentage = ?" +
+                " WHERE CountryCode = ?";
         try (Connection connection = DBConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            preparedStatement.setString(1, language.getCountryCode());
-            preparedStatement.setString(2, language.getLanguage());
-            preparedStatement.setBoolean(3, language.isOfficial());
-            preparedStatement.setDouble(4, language.getPercentage());
-            preparedStatement.setString(5, language.getCountryCode());
+            preparedStatement.setString(1, language.getLanguage());
+            preparedStatement.setBoolean(2, language.isOfficial());
+            preparedStatement.setDouble(3, language.getPercentage());
+            preparedStatement.setString(4, language.getCountryCode());
+            preparedStatement.setString(6, language.getCountryCode());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
