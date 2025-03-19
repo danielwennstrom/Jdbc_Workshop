@@ -10,6 +10,7 @@ import se.lexicon.model.CountryLanguage;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import static se.lexicon.model.Constants.*;
 
 /**
  * Represents the entry point of the application.
@@ -48,7 +49,7 @@ public class Main {
                         case "3":
                             handleCreate(scanner, CountryLanguage.class);
                             break;
-                        case "q":
+                        case OPTION_QUIT:
                             break;
                         default:
                             System.out.println("Invalid option. Please try again.");
@@ -66,7 +67,7 @@ public class Main {
                         case "3":
                             handleSearchMenu(scanner, CountryLanguage.class, true);
                             break;
-                        case "q":
+                        case OPTION_QUIT:
                             break;
                         default:
                             System.out.println("Invalid option. Please try again.");
@@ -84,7 +85,7 @@ public class Main {
                         case "3":
                             handleUpdate(scanner, CountryLanguage.class);
                             break;
-                        case "q":
+                        case OPTION_QUIT:
                             break;
                         default:
                             System.out.println("Invalid option. Please try again.");
@@ -102,13 +103,13 @@ public class Main {
                         case "3":
                             handleDelete(scanner, CountryLanguage.class);
                             break;
-                        case "q":
+                        case OPTION_QUIT:
                             break;
                         default:
                             System.out.println("Invalid option. Please try again.");
                     }
                     break;
-                case "q":
+                case OPTION_QUIT:
                     running = false;
                     System.out.println("Thank you for using CRUDe World!");
                     scanner.close();
@@ -128,10 +129,10 @@ public class Main {
 
     private static <T> void handleCreate(Scanner scanner, Class<T> createType) throws SQLException {
         if (createType == City.class) {
-            String name = promptForInput("Name", scanner, String.class);
-            String countryCode = promptForInput("Country Code", scanner, String.class);
-            String district = promptForInput("District", scanner, String.class);
-            int population = promptForInput("Population", scanner, Integer.class);
+            String name = promptForInput(OPTION_NAME, scanner, String.class);
+            String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
+            String district = promptForInput(OPTION_DISTRICT, scanner, String.class);
+            int population = promptForInput(OPTION_POPULATION, scanner, Integer.class);
 
             City city = new City(name, countryCode, district, population);
 
@@ -147,21 +148,21 @@ public class Main {
         }
 
         if (createType == Country.class) {
-            String countryCode = promptForInput("Country Code", scanner, String.class);
-            String name = promptForInput("Name", scanner, String.class);
-            String continent = promptForInput("Continent", scanner, String.class);
-            String region = promptForInput("Region", scanner, String.class);
-            double surfaceArea = promptForInput("Surface area", scanner, Double.class);
-            int indepYear = promptForInput("Independence year", scanner, Integer.class);
-            long population = promptForInput("Population", scanner, Long.class);
-            double lifeExpectancy = promptForInput("Life expectancy", scanner, Double.class);
-            double gnp = promptForInput("GNP", scanner, Double.class);
-            double gnpOld = promptForInput("GNP old", scanner, Double.class);
-            String localName = promptForInput("Local name", scanner, String.class);
-            String governmentForm = promptForInput("Government form", scanner, String.class);
-            String headOfState = promptForInput("Head of state", scanner, String.class);
-            int capitalId = promptForInput("Capital ID", scanner, Integer.class);
-            String code2 = promptForInput("2-letter Country Code", scanner, String.class);
+            String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
+            String name = promptForInput(OPTION_NAME, scanner, String.class);
+            String continent = promptForInput(OPTION_CONTINENT, scanner, String.class);
+            String region = promptForInput(OPTION_REGION, scanner, String.class);
+            double surfaceArea = promptForInput(OPTION_SURFACE_AREA, scanner, Double.class);
+            int indepYear = promptForInput(OPTION_INDEPENDENCE_YEAR, scanner, Integer.class);
+            long population = promptForInput(OPTION_POPULATION, scanner, Long.class);
+            double lifeExpectancy = promptForInput(OPTION_LIFE_EXPECTANCY, scanner, Double.class);
+            double gnp = promptForInput(OPTION_GNP, scanner, Double.class);
+            double gnpOld = promptForInput(OPTION_GNP_OLD, scanner, Double.class);
+            String localName = promptForInput(OPTION_LOCAL_NAME, scanner, String.class);
+            String governmentForm = promptForInput(OPTION_GOVERNMENT_FORM, scanner, String.class);
+            String headOfState = promptForInput(OPTION_HEAD_OF_STATE, scanner, String.class);
+            int capitalId = promptForInput(OPTION_CAPITAL_ID, scanner, Integer.class);
+            String code2 = promptForInput(OPTION_CODE2, scanner, String.class);
 
             Country country = new Country(countryCode, name, continent, region,
                     surfaceArea, indepYear, population, lifeExpectancy, gnp, gnpOld,
@@ -179,10 +180,10 @@ public class Main {
         }
 
         if (createType == CountryLanguage.class) {
-            String countryCode = promptForInput("Country Code", scanner, String.class);
-            String languageName = promptForInput("Language Name", scanner, String.class);
-            boolean isOfficial = promptForInput("Is Official", scanner, Boolean.class);
-            double percentage = promptForInput("Percentage", scanner, Double.class);
+            String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
+            String languageName = promptForInput(OPTION_LANGUAGE_NAME, scanner, String.class);
+            boolean isOfficial = promptForInput(OPTION_IS_OFFICIAL, scanner, Boolean.class);
+            double percentage = promptForInput(OPTION_PERCENTAGE, scanner, Double.class);
 
             CountryLanguage countryLanguage = new CountryLanguage(countryCode, languageName, isOfficial, percentage);
 
@@ -264,25 +265,25 @@ public class Main {
                 switch (scanner.nextLine()) {
                     case "1":
                         city.map(City::getName).ifPresent(System.out::println);
-                        String name = promptForInput("New name", scanner, String.class);
+                        String name = promptForInput(OPTION_NAME, scanner, String.class);
                         city.ifPresent(c -> c.setName(name));
                         break;
                     case "2":
                         city.map(City::getCountryCode).ifPresent(System.out::println);
-                        String countryCode = promptForInput("New country code", scanner, String.class);
+                        String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
                         city.ifPresent(c -> c.setCountryCode(countryCode));
                         break;
                     case "3":
                         city.map(City::getDistrict).ifPresent(System.out::println);
-                        String district = promptForInput("New district", scanner, String.class);
+                        String district = promptForInput(OPTION_DISTRICT, scanner, String.class);
                         city.ifPresent(c -> c.setDistrict(district));
                         break;
                     case "4":
                         city.map(City::getPopulation).ifPresent(System.out::println);
-                        int population = promptForInput("New population", scanner, Integer.class);
+                        int population = promptForInput(OPTION_POPULATION, scanner, Integer.class);
                         city.ifPresent(c -> c.setPopulation(population));
                         break;
-                    case "s":
+                    case OPTION_SAVE:
                         handleDisplay(city);
                         System.out.println("Does this look correct? Y/N");
                         if (scanner.nextLine().equalsIgnoreCase("y")) {
@@ -296,7 +297,7 @@ public class Main {
                         }
 
                         return;
-                    case "q":
+                    case OPTION_QUIT:
                         return;
                     default:
                         System.out.println("Invalid option. Please try again.");
@@ -324,75 +325,75 @@ public class Main {
                 switch (scanner.nextLine()) {
                     case "1":
                         System.out.println(country.getName());
-                        String name = promptForInput("New name", scanner, String.class);
+                        String name = promptForInput(OPTION_NAME, scanner, String.class);
                         country.setName(name);
                         break;
                     case "2":
                         System.out.println(country.getContinent());
-                        String continent = promptForInput("New continent", scanner, String.class);
+                        String continent = promptForInput(OPTION_CONTINENT, scanner, String.class);
                         country.setContinent(continent);
                         break;
                     case "3":
                         System.out.println(country.getRegion());
-                        String region = promptForInput("New region", scanner, String.class);
+                        String region = promptForInput(OPTION_REGION, scanner, String.class);
                         country.setRegion(region);
                         break;
                     case "4":
                         System.out.println(country.getSurfaceArea());
-                        double surfaceArea = promptForInput("New surface area", scanner, Double.class);
+                        double surfaceArea = promptForInput(OPTION_SURFACE_AREA, scanner, Double.class);
                         country.setSurfaceArea(surfaceArea);
                         break;
                     case "5":
                         System.out.println(country.getIndepYear());
-                        int indepYear = promptForInput("New independence year", scanner, Integer.class);
+                        int indepYear = promptForInput(OPTION_INDEPENDENCE_YEAR, scanner, Integer.class);
                         country.setIndepYear(indepYear);
                         break;
                     case "6":
                         System.out.println(country.getPopulation());
-                        long population = promptForInput("New population", scanner, Long.class);
+                        long population = promptForInput(OPTION_POPULATION, scanner, Long.class);
                         country.setPopulation(population);
                         break;
                     case "7":
                         System.out.println(country.getLifeExpectancy());
-                        double lifeExpectancy = promptForInput("New name", scanner, Double.class);
+                        double lifeExpectancy = promptForInput(OPTION_LIFE_EXPECTANCY, scanner, Double.class);
                         country.setLifeExpectancy(lifeExpectancy);
                         break;
                     case "8":
                         System.out.println(country.getGnp());
-                        double gnp = promptForInput("New GNP", scanner, Double.class);
+                        double gnp = promptForInput(OPTION_GNP, scanner, Double.class);
                         country.setGnp(gnp);
                         break;
                     case "9":
                         System.out.println(country.getGnpOld());
-                        double gnpOld = promptForInput("New GNP (old)", scanner, Double.class);
+                        double gnpOld = promptForInput(OPTION_GNP_OLD, scanner, Double.class);
                         country.setGnpOld(gnpOld);
                         break;
                     case "10":
                         System.out.println(country.getLocalName());
-                        String localName = promptForInput("New local name", scanner, String.class);
+                        String localName = promptForInput(OPTION_LOCAL_NAME, scanner, String.class);
                         country.setLocalName(localName);
                         break;
                     case "11":
                         System.out.println(country.getGovernmentForm());
-                        String governmentForm = promptForInput("New government form", scanner, String.class);
+                        String governmentForm = promptForInput(OPTION_GOVERNMENT_FORM, scanner, String.class);
                         country.setGovernmentForm(governmentForm);
                         break;
                     case "12":
                         System.out.println(country.getHeadOfState());
-                        String headOfState = promptForInput("New Head of State", scanner, String.class);
+                        String headOfState = promptForInput(OPTION_HEAD_OF_STATE, scanner, String.class);
                         country.setHeadOfState(headOfState);
                         break;
                     case "13":
                         System.out.println(country.getCapital());
-                        int capitalId = promptForInput("New capital ID", scanner, Integer.class);
+                        int capitalId = promptForInput(OPTION_CAPITAL_ID, scanner, Integer.class);
                         country.setCapital(capitalId);
                         break;
                     case "14":
                         System.out.println(country.getCode2());
-                        String code2 = promptForInput("New 2-letter country code", scanner, String.class);
+                        String code2 = promptForInput(OPTION_CODE2, scanner, String.class);
                         country.setCode2(code2);
                         break;
-                    case "s":
+                    case OPTION_SAVE:
                         handleDisplay(country);
                         System.out.println("Does this look correct? Y/N");
                         if (scanner.nextLine().equalsIgnoreCase("y")) {
@@ -404,7 +405,7 @@ public class Main {
                         }
 
                         return;
-                    case "q":
+                    case OPTION_QUIT:
                         return;
                     default:
                         System.out.println("Invalid option. Please try again.");
@@ -423,20 +424,20 @@ public class Main {
                 switch (scanner.nextLine()) {
                     case "1":
                         System.out.println(countryLanguage.getLanguage());
-                        String languageName = promptForInput("New language name", scanner, String.class);
+                        String languageName = promptForInput(OPTION_LANGUAGE_NAME, scanner, String.class);
                         countryLanguage.setLanguage(languageName);
                         break;
                     case "2":
                         System.out.println(countryLanguage.isOfficial());
-                        boolean isOfficial = promptForInput("New official status", scanner, Boolean.class);
+                        boolean isOfficial = promptForInput(OPTION_IS_OFFICIAL, scanner, Boolean.class);
                         countryLanguage.setOfficial(isOfficial);
                         break;
                     case "3":
                         System.out.println(countryLanguage.getPercentage());
-                        double percentage = promptForInput("New percentage", scanner, Double.class);
+                        double percentage = promptForInput(OPTION_PERCENTAGE, scanner, Double.class);
                         countryLanguage.setPercentage(percentage);
                         break;
-                    case "s":
+                    case OPTION_SAVE:
                         handleDisplay(countryLanguage);
                         System.out.println("Does this look correct? Y/N");
                         if (scanner.nextLine().equalsIgnoreCase("y")) {
@@ -448,7 +449,7 @@ public class Main {
                         }
 
                         return;
-                    case "q":
+                    case OPTION_QUIT:
                         return;
                     default:
                         System.out.println("Invalid option. Please try again.");
@@ -505,7 +506,7 @@ public class Main {
 
             AtomicInteger searchIndex = new AtomicInteger(1);
             if (searchType == City.class) {
-                int id = promptForInput("ID", scanner, Integer.class);
+                int id = promptForInput(OPTION_ID, scanner, Integer.class);
 
                 result = collection.stream()
                         .filter(obj -> obj instanceof City)
@@ -515,7 +516,7 @@ public class Main {
                         .findFirst()
                         .orElse(null);
             } else if (searchType == Country.class) {
-                int id = promptForInput("ID", scanner, Integer.class);
+                int id = promptForInput(OPTION_ID, scanner, Integer.class);
 
                 result = collection.stream()
                         .filter(obj -> obj instanceof Country)
@@ -525,7 +526,7 @@ public class Main {
                         .findFirst()
                         .orElse(null);
             } else if (searchType == CountryLanguage.class) {
-                int id = promptForInput("ID", scanner, Integer.class);
+                int id = promptForInput(OPTION_ID, scanner, Integer.class);
 
                 result = collection.stream()
                         .filter(obj -> obj instanceof CountryLanguage)
@@ -549,53 +550,53 @@ public class Main {
                                            boolean displayResult) throws SQLException {
         if (searchType == City.class) {
             switch (option) {
-                case "ID":
-                    int id = promptForInput("ID", scanner, Integer.class);
+                case OPTION_ID:
+                    int id = promptForInput(OPTION_ID, scanner, Integer.class);
                     return handleSearchResults(scanner, cityDao.findById(id), City.class, displayResult);
-                case "Name":
-                    String name = promptForInput("Name", scanner, String.class);
+                case OPTION_NAME:
+                    String name = promptForInput(OPTION_NAME, scanner, String.class);
                     return handleSearchResults(scanner, cityDao.findByName(name), City.class, displayResult);
-                case "Country Code":
-                    String countryCode = promptForInput("Country Code", scanner, String.class);
+                case OPTION_COUNTRY_CODE:
+                    String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
                     return handleSearchResults(scanner, cityDao.findByCode(countryCode), City.class, displayResult);
-                case "All":
+                case OPTION_ALL:
                     return handleSearchResults(scanner, cityDao.findAll(), City.class, displayResult);
             }
         }
 
         if (searchType == Country.class) {
             switch (option) {
-                case "Country Code":
-                    String countryCode = promptForInput("Country Code", scanner, String.class);
+                case OPTION_COUNTRY_CODE:
+                    String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
                     return handleSearchResults(scanner, countryDao.findByCode(countryCode), Country.class, displayResult);
-                case "Name":
-                    String name = promptForInput("Name", scanner, String.class);
+                case OPTION_NAME:
+                    String name = promptForInput(OPTION_NAME, scanner, String.class);
                     return handleSearchResults(scanner, countryDao.findByName(name), Country.class, displayResult);
-                case "Continent":
-                    String continent = promptForInput("Continent", scanner, String.class);
+                case OPTION_CONTINENT:
+                    String continent = promptForInput(OPTION_CONTINENT, scanner, String.class);
                     return handleSearchResults(scanner, countryDao.findByContinent(continent), Country.class, displayResult);
-                case "Region":
-                    String region = promptForInput("Region", scanner, String.class);
+                case OPTION_REGION:
+                    String region = promptForInput(OPTION_REGION, scanner, String.class);
                     return handleSearchResults(scanner, countryDao.findByRegion(region), Country.class, displayResult);
-                case "Capital":
-                    int capital = promptForInput("Capital ID", scanner, Integer.class);
+                case OPTION_CAPITAL:
+                    int capital = promptForInput(OPTION_CAPITAL_ID, scanner, Integer.class);
                     return handleSearchResults(scanner, countryDao.findByCapital(capital), Country.class, displayResult);
-                case "All":
+                case OPTION_ALL:
                     return handleSearchResults(scanner, countryDao.findAll(), Country.class, displayResult);
             }
         }
 
         if (searchType == CountryLanguage.class) {
             switch (option) {
-                case "Country Code":
-                    String countryCode = promptForInput("Country Code", scanner, String.class);
+                case OPTION_COUNTRY_CODE:
+                    String countryCode = promptForInput(OPTION_COUNTRY_CODE, scanner, String.class);
                     return handleSearchResults(scanner, countryLanguageDao.findByCode(countryCode), CountryLanguage.class, displayResult);
-                case "Language name":
-                    String language = promptForInput("Language name", scanner, String.class);
+                case OPTION_LANGUAGE_NAME:
+                    String language = promptForInput(OPTION_LANGUAGE_NAME, scanner, String.class);
                     return handleSearchResults(scanner, countryLanguageDao.findByLanguageName(language), CountryLanguage.class, displayResult);
-                case "All":
+                case OPTION_ALL:
                     return handleSearchResults(scanner, countryLanguageDao.findAll(), CountryLanguage.class, displayResult);
-                case "q":
+                case OPTION_QUIT:
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
@@ -617,14 +618,14 @@ public class Main {
 
             switch (option) {
                 case "1":
-                    return handleSearch(scanner, "ID", City.class, displayResult);
+                    return handleSearch(scanner, OPTION_ID, City.class, displayResult);
                 case "2":
-                    return handleSearch(scanner, "Name", City.class, displayResult);
+                    return handleSearch(scanner, OPTION_NAME, City.class, displayResult);
                 case "3":
-                    return handleSearch(scanner, "Country Code", City.class, displayResult);
+                    return handleSearch(scanner, OPTION_COUNTRY_CODE, City.class, displayResult);
                 case "4":
-                    return handleSearch(scanner, "All", City.class, displayResult);
-                case "q":
+                    return handleSearch(scanner, OPTION_ALL, City.class, displayResult);
+                case OPTION_QUIT:
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
@@ -644,18 +645,18 @@ public class Main {
 
             switch (option) {
                 case "1":
-                    return handleSearch(scanner, "Country Code", Country.class, displayResult);
+                    return handleSearch(scanner, OPTION_COUNTRY_CODE, Country.class, displayResult);
                 case "2":
-                    return handleSearch(scanner, "Name", Country.class, displayResult);
+                    return handleSearch(scanner, OPTION_NAME, Country.class, displayResult);
                 case "3":
-                    return handleSearch(scanner, "Continent", Country.class, displayResult);
+                    return handleSearch(scanner, OPTION_CONTINENT, Country.class, displayResult);
                 case "4":
-                    return handleSearch(scanner, "Region", Country.class, displayResult);
+                    return handleSearch(scanner, OPTION_REGION, Country.class, displayResult);
                 case "5":
-                    return handleSearch(scanner, "Capital", Country.class, displayResult);
+                    return handleSearch(scanner, OPTION_CAPITAL, Country.class, displayResult);
                 case "6":
-                    return handleSearch(scanner, "All", Country.class, displayResult);
-                case "q":
+                    return handleSearch(scanner, OPTION_ALL, Country.class, displayResult);
+                case OPTION_QUIT:
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
@@ -672,12 +673,12 @@ public class Main {
 
             switch (option) {
                 case "1":
-                    return handleSearch(scanner, "Country Code", CountryLanguage.class, displayResult);
+                    return handleSearch(scanner, OPTION_COUNTRY_CODE, CountryLanguage.class, displayResult);
                 case "2":
-                    return handleSearch(scanner, "Language name", CountryLanguage.class, displayResult);
+                    return handleSearch(scanner, OPTION_LANGUAGE_NAME, CountryLanguage.class, displayResult);
                 case "3":
-                    return handleSearch(scanner, "All", CountryLanguage.class, displayResult);
-                case "q":
+                    return handleSearch(scanner, OPTION_ALL, CountryLanguage.class, displayResult);
+                case OPTION_QUIT:
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
