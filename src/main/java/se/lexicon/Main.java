@@ -22,7 +22,6 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
-        City selectedCity;
 
         while (running) {
             System.out.println("Welcome to CRUDe World!");
@@ -36,12 +35,13 @@ public class Main {
                     displayAvailableDataMenu();
                     switch (scanner.nextLine()) {
                         case "1":
-                            handleCityCreate(scanner);
+                            handleCreate(scanner, City.class);
                             break;
                         case "2":
-                            handleCountryCreate(scanner);
+                            handleCreate(scanner, Country.class);
                             break;
                         case "3":
+                            handleCreate(scanner, CountryLanguage.class);
                             break;
                         case "q":
                             break;
@@ -129,38 +129,75 @@ public class Main {
         System.out.println("3) Language");
     }
 
-    private static void handleCountryCreate(Scanner scanner) throws SQLException {
-        String countryCode = promptForInput("Country Code", scanner, String.class);
-        String name = promptForInput("Name", scanner, String.class);
-        String continent = promptForInput("Continent", scanner, String.class);
-        String region = promptForInput("Region", scanner, String.class);
-        double surfaceArea = promptForInput("Surface area", scanner, Double.class);
-        int indepYear = promptForInput("Independence year", scanner, Integer.class);
-        long population = promptForInput("Population", scanner, Long.class);
-        double lifeExpectancy = promptForInput("Life expectancy", scanner, Double.class);
-        double gnp = promptForInput("GNP", scanner, Double.class);
-        double gnpOld = promptForInput("GNP old", scanner, Double.class);
-        String localName = promptForInput("Local name", scanner, String.class);
-        String governmentForm = promptForInput("Government form", scanner, String.class);
-        String headOfState = promptForInput("Head of state", scanner, String.class);
-        int capitalId = promptForInput("Capital ID", scanner, Integer.class);
-        String code2 = promptForInput("2-letter Country Code", scanner, String.class);
+    private static <T> void handleCreate(Scanner scanner, Class<T> createType) throws SQLException {
+        if (createType == City.class) {
+            String name = promptForInput("Name", scanner, String.class);
+            String countryCode = promptForInput("Country Code", scanner, String.class);
+            String district = promptForInput("District", scanner, String.class);
+            int population = promptForInput("Population", scanner, Integer.class);
 
-        Country country = new Country(countryCode, name, continent, region,
-                surfaceArea, indepYear, population, lifeExpectancy, gnp, gnpOld,
-                localName, governmentForm, headOfState, capitalId, code2);
+            City city = new City(name, countryCode, district, population);
 
-        countryDao.save(country);
-    }
+            handleDisplay(city);
+            System.out.println("Is this correct? Y/N");
 
-    private static void handleCityCreate(Scanner scanner) throws SQLException {
-        String name = promptForInput("Name", scanner, String.class);
-        String countryCode = promptForInput("Country Code", scanner, String.class);
-        String district = promptForInput("District", scanner, String.class);
-        int population = promptForInput("Population", scanner, Integer.class);
+            if (scanner.nextLine().equalsIgnoreCase("y"))
+                cityDao.save(city);
+            else {
+                System.out.println("City not saved.");
+                return;
+            }
+        }
 
-        City city = new City(name, countryCode, district, population);
-        cityDao.save(city);
+        if (createType == Country.class) {
+            String countryCode = promptForInput("Country Code", scanner, String.class);
+            String name = promptForInput("Name", scanner, String.class);
+            String continent = promptForInput("Continent", scanner, String.class);
+            String region = promptForInput("Region", scanner, String.class);
+            double surfaceArea = promptForInput("Surface area", scanner, Double.class);
+            int indepYear = promptForInput("Independence year", scanner, Integer.class);
+            long population = promptForInput("Population", scanner, Long.class);
+            double lifeExpectancy = promptForInput("Life expectancy", scanner, Double.class);
+            double gnp = promptForInput("GNP", scanner, Double.class);
+            double gnpOld = promptForInput("GNP old", scanner, Double.class);
+            String localName = promptForInput("Local name", scanner, String.class);
+            String governmentForm = promptForInput("Government form", scanner, String.class);
+            String headOfState = promptForInput("Head of state", scanner, String.class);
+            int capitalId = promptForInput("Capital ID", scanner, Integer.class);
+            String code2 = promptForInput("2-letter Country Code", scanner, String.class);
+
+            Country country = new Country(countryCode, name, continent, region,
+                    surfaceArea, indepYear, population, lifeExpectancy, gnp, gnpOld,
+                    localName, governmentForm, headOfState, capitalId, code2);
+
+            handleDisplay(country);
+            System.out.println("Is this correct? Y/N");
+
+            if (scanner.nextLine().equalsIgnoreCase("y"))
+                countryDao.save(country);
+            else {
+                System.out.println("Country not saved.");
+                return;
+            }
+        }
+
+        if (createType == CountryLanguage.class) {
+            String countryCode = promptForInput("Country Code", scanner, String.class);
+            String languageName = promptForInput("Language Name", scanner, String.class);
+            boolean isOfficial = promptForInput("Is Official", scanner, Boolean.class);
+            double percentage = promptForInput("Percentage", scanner, Double.class);
+
+            CountryLanguage countryLanguage = new CountryLanguage(countryCode, languageName, isOfficial, percentage);
+
+            handleDisplay(countryLanguage);
+            System.out.println("Is this correct? Y/N");
+
+            if (scanner.nextLine().equalsIgnoreCase("y"))
+                countryLanguageDao.save(countryLanguage);
+            else {
+                System.out.println("Language not saved.");
+            }
+        }
     }
 
 //    private static void handleCityUpdate(Scanner scanner, Optional<City> selectedCity) throws SQLException {
@@ -442,8 +479,11 @@ public class Main {
         return null;
     }
 
-        private static <T> T promptForInput(String option, Scanner scanner, Class<T> type) {
-        System.out.printf("Enter %s: \n", option);
+    private static <T> T promptForInput(String option, Scanner scanner, Class<T> type) {
+        if (type == Boolean.class)
+            System.out.printf("Enter %s, Y/NN: \n", option);
+        else
+            System.out.printf("Enter %s: \n", option);
 
         if (type == Integer.class) {
             while (!scanner.hasNextInt()) {
@@ -485,6 +525,21 @@ public class Main {
             String input = scanner.nextLine();
 
             return type.cast(input);
+        }
+
+
+        if (type == Boolean.class) {
+            String input = scanner.nextLine();
+            boolean result;
+
+            if (input.equalsIgnoreCase("y"))
+                result = true;
+            else if (input.equalsIgnoreCase("n"))
+                result = false;
+            else
+                throw new IllegalArgumentException("Invalid input. Please enter 'y' or 'n'.");
+
+            return type.cast(result);
         }
 
         return null;

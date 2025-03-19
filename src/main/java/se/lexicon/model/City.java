@@ -67,11 +67,17 @@ public class City {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("Name: ").append(name).append("       ").append("Country Code: ").append(countryCode).append("\n");
-        sb.append("District: ").append(district).append("      ").append("Population: ").append(population).append("\n");
-
-        return sb.toString();
+        return String.format(
+                "City Details:\n" +
+                        "-------------------------------------\n" +
+                        "City Name      : %s\n" +
+                        "Country Code   : %s\n" +
+                        "District       : %s\n" +
+                        "Population     : %,d\n",
+                name,
+                countryCode,
+                district,
+                population
+        );
     }
 }
