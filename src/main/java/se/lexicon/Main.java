@@ -17,6 +17,7 @@ public class Main {
         CityDaoImpl cityDao = new CityDaoImpl();
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
+        Optional<City> selectedCity = Optional.empty();
 
         while (running) {
             System.out.println("Welcome to CRUDe World!");
@@ -29,10 +30,7 @@ public class Main {
                 case "1":
                     break;
                 case "2":
-                    System.out.println("Please select an option (or q to return): ");
-                    System.out.println("1) City");
-                    System.out.println("2) Country");
-                    System.out.println("3) Language");
+                    displayAvailableDataMenu();
                     switch (scanner.nextLine()) {
                         case "1":
                             System.out.println("Search by... (or q to return): ");
@@ -54,7 +52,7 @@ public class Main {
                                     handleCitySearch("All", scanner, cityDao);
                                     break;
                                 case "q":
-                                    return;
+                                    break;
                                 default:
                                     System.out.println("Invalid option. Please try again.");
                             }
@@ -64,14 +62,29 @@ public class Main {
                         case "3":
                             break;
                         case "q":
-                            return;
+                            break;
                         default:
                             System.out.println("Invalid option. Please try again.");
                     }
                     break;
                 case "3":
+                    displayAvailableDataMenu();
+                    switch (scanner.nextLine()) {
+                        case "1":
+                            handleCityUpdate(scanner, selectedCity, cityDao);
+                            break;
+                        case "2":
+                            break;
+                        case "3":
+                            break;
+                        case "q":
+                            break;
+                        default:
+                            System.out.println("Invalid option. Please try again.");
+                    }
                     break;
                 case "4":
+                    displayAvailableDataMenu();
                     break;
                 case "q":
                     running = false;
@@ -84,7 +97,91 @@ public class Main {
         }
     }
 
-    private static Optional<Integer> handleCitySearch(String searchType, Scanner scanner, CityDaoImpl cityDao) throws SQLException {
+    private static void handleCityUpdate(Scanner scanner, Optional<City> selectedCity, CityDaoImpl cityDao) throws SQLException {
+        selectedCity = handleCitySearchReturn(scanner, selectedCity, cityDao);
+        if (!selectedCity.isPresent())
+            return;
+
+        while (true) {
+            System.out.println("Update... (or s to save, q to return)");
+            System.out.println("1) Name");
+            System.out.println("2) Country Code");
+            System.out.println("3) District");
+            System.out.println("4) Population");
+            switch (scanner.nextLine()) {
+                case "1":
+                    selectedCity.map(City::getName).ifPresent(System.out::println);
+                    String name = promptForInput("New name", scanner, String.class);
+                    selectedCity.ifPresent(city -> city.setName(name));
+                    break;
+                case "2":
+                    selectedCity.map(City::getCountryCode).ifPresent(System.out::println);
+                    String countryCode = promptForInput("New country code", scanner, String.class);
+                    selectedCity.ifPresent(city -> city.setCountryCode(countryCode));
+                    break;
+                case "3":
+                    selectedCity.map(City::getDistrict).ifPresent(System.out::println);
+                    String district = promptForInput("New district", scanner, String.class);
+                    selectedCity.ifPresent(city -> city.setDistrict(district));
+                    break;
+                case "4":
+                    selectedCity.map(City::getPopulation).ifPresent(System.out::println);
+                    int population = promptForInput("New population", scanner, Integer.class);
+                    selectedCity.ifPresent(city -> city.setPopulation(population));
+                    break;
+                case "s":
+                    selectedCity.ifPresent(city -> {
+                        try {
+                            cityDao.update(city);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    return;
+                case "q":
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static Optional<City> handleCitySearchReturn(Scanner scanner, Optional<City> selectedCity, CityDaoImpl cityDao) throws SQLException {
+        System.out.println("Search by... (or q to return): ");
+        System.out.println("1) ID");
+        System.out.println("2) Name");
+        System.out.println("3) Country Code");
+        System.out.println("4) All");
+        switch (scanner.nextLine()) {
+            case "1":
+                selectedCity = handleCitySearch("ID", scanner, cityDao);
+                break;
+            case "2":
+                selectedCity = handleCitySearch("Name", scanner, cityDao);
+                break;
+            case "3":
+                selectedCity = handleCitySearch("Country Code", scanner, cityDao);
+                break;
+            case "4":
+                selectedCity = handleCitySearch("All", scanner, cityDao);
+                break;
+            case "q":
+                return Optional.empty();
+            default:
+                System.out.println("Invalid option. Please try again.");
+        }
+        return selectedCity;
+    }
+
+    private static void displayAvailableDataMenu() {
+        System.out.println("Please select an option (or q to return): ");
+        System.out.println("1) City");
+        System.out.println("2) Country");
+        System.out.println("3) Language");
+    }
+
+    private static Optional<City> handleCitySearch(String searchType, Scanner scanner, CityDaoImpl cityDao) throws SQLException {
         List<City> cities = new ArrayList<>();
 
         switch (searchType) {
@@ -93,7 +190,7 @@ public class Main {
                 int id = promptForInput("ID", scanner, Integer.class);
                 city = cityDao.findById(id);
                 displayCity(city);
-                return Optional.of(id);
+                return city;
             case "Name":
                 String name = promptForInput("Name", scanner, String.class);
                 cities = cityDao.findByName(name);
@@ -116,7 +213,7 @@ public class Main {
         if (cities.size() == 1) {
             displayCity(Optional.of(cities.get(0)));
 
-            return Optional.of(cities.get(0).getId());
+            return Optional.of(cities.get(0));
         }
 
         displayCitySearchResults(cities);
@@ -124,11 +221,11 @@ public class Main {
         Optional<City> selectedCity = cityDao.findById(id);
         displayCity(selectedCity);
 
-        return Optional.of(id);
+        return selectedCity;
     }
 
 
-    private static void displayCity(Optional<City> city) throws SQLException {
+    private static void displayCity(Optional<City> city) {
         city.ifPresent(System.out::println);
     }
 
