@@ -1,10 +1,15 @@
 package se.lexicon.dao;
 
+import se.lexicon.db.DBConnection;
+import se.lexicon.model.City;
 import se.lexicon.model.Country;
 import se.lexicon.model.CountryLanguage;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +35,21 @@ public class CountryDaoImpl implements CountryDao {
     }
 
     @Override
-    public List<Country> findByCode(String code) throws SQLException {
-        return List.of();
+    public Country findByCode(String code) throws SQLException {
+        String query = "SELECT * FROM country WHERE Code = ?";
+        try (Connection connection = DBConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, code);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return mapRow(resultSet);
+            } else {
+                return null;
+            }
+        }
     }
 
     @Override

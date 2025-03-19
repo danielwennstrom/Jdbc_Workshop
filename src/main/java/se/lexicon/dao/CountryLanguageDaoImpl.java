@@ -19,8 +19,8 @@ public class CountryLanguageDaoImpl implements CountryLanguageDao {
     }
 
     @Override
-    public List<CountryLanguage> findByCode(String code) throws SQLException {
-        return List.of();
+    public CountryLanguage findByCode(String code) throws SQLException {
+        return null;
     }
 
     @Override
