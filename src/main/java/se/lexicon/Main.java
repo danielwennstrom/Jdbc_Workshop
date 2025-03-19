@@ -1,7 +1,10 @@
 package se.lexicon;
 
 import se.lexicon.dao.CityDaoImpl;
+import se.lexicon.dao.CountryDaoImpl;
+import se.lexicon.dao.CountryLanguageDaoImpl;
 import se.lexicon.model.City;
+import se.lexicon.model.Country;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws SQLException {
         CityDaoImpl cityDao = new CityDaoImpl();
+        CountryDaoImpl countryDao = new CountryDaoImpl();
+        CountryLanguageDaoImpl countryLanguageDao = new CountryLanguageDaoImpl();
         boolean running = true;
         Scanner scanner = new Scanner(System.in);
         Optional<City> selectedCity = Optional.empty();
@@ -34,6 +39,7 @@ public class Main {
                             handleCityCreate(scanner, cityDao);
                             break;
                         case "2":
+                            handleCountryCreate(scanner, countryDao);
                             break;
                         case "3":
                             break;
@@ -47,29 +53,7 @@ public class Main {
                     displayAvailableDataMenu();
                     switch (scanner.nextLine()) {
                         case "1":
-                            System.out.println("Search by... (or q to return): ");
-                            System.out.println("1) ID");
-                            System.out.println("2) Name");
-                            System.out.println("3) Country Code");
-                            System.out.println("4) All");
-                            switch (scanner.nextLine()) {
-                                case "1":
-                                    handleCitySearch("ID", scanner, cityDao);
-                                    break;
-                                case "2":
-                                    handleCitySearch("Name", scanner, cityDao);
-                                    break;
-                                case "3":
-                                    handleCitySearch("Country Code", scanner, cityDao);
-                                    break;
-                                case "4":
-                                    handleCitySearch("All", scanner, cityDao);
-                                    break;
-                                case "q":
-                                    break;
-                                default:
-                                    System.out.println("Invalid option. Please try again.");
-                            }
+                            handleCitySearchReturn(scanner, selectedCity, cityDao);
                             break;
                         case "2":
                             break;
@@ -134,6 +118,30 @@ public class Main {
                     System.out.println("Invalid option. Please try again.");
             }
         }
+    }
+
+    private static void handleCountryCreate(Scanner scanner, CountryDaoImpl countryDao) throws SQLException {
+        String countryCode = promptForInput("Country Code", scanner, String.class);
+        String name = promptForInput("Name", scanner, String.class);
+        String continent = promptForInput("Continent", scanner, String.class);
+        String region = promptForInput("Region", scanner, String.class);
+        double surfaceArea = promptForInput("Surface area", scanner, Double.class);
+        int indepYear = promptForInput("Independence year", scanner, Integer.class);
+        long population = promptForInput("Population", scanner, Long.class);
+        double lifeExpectancy = promptForInput("Life expectancy", scanner, Double.class);
+        double gnp = promptForInput("GNP", scanner, Double.class);
+        double gnpOld = promptForInput("GNP old", scanner, Double.class);
+        String localName = promptForInput("Local name", scanner, String.class);
+        String governmentForm = promptForInput("Government form", scanner, String.class);
+        String headOfState = promptForInput("Head of state", scanner, String.class);
+        int capitalId = promptForInput("Capital ID", scanner, Integer.class);
+        String code2 = promptForInput("2-letter Country Code", scanner, String.class);
+
+        Country country = new Country(countryCode, name, continent, region,
+        surfaceArea, indepYear, population, lifeExpectancy, gnp, gnpOld,
+                localName, governmentForm,headOfState, capitalId, code2);
+
+        countryDao.save(country);
     }
 
     private static void handleCityCreate(Scanner scanner, CityDaoImpl cityDao) throws SQLException {
@@ -294,6 +302,30 @@ public class Main {
             }
 
             int input = scanner.nextInt();
+            scanner.nextLine();
+
+            return type.cast(input);
+        }
+
+        if (type == Double.class) {
+            while (!scanner.hasNextDouble()) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.next();
+            }
+
+            double input = scanner.nextDouble();
+            scanner.nextLine();
+
+            return type.cast(input);
+        }
+
+        if (type == Long.class) {
+            while (!scanner.hasNextLong()) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.next();
+            }
+
+            long input = scanner.nextLong();
             scanner.nextLine();
 
             return type.cast(input);
