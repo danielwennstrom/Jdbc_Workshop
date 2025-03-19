@@ -1,6 +1,6 @@
 package se.lexicon.dao;
 
-import se.lexicon.model.City;
+import se.lexicon.model.Country;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -8,47 +8,47 @@ import java.util.Optional;
 
 public class CountryDaoImpl implements CountryDao {
     @Override
-    public Optional<City> findById(int id) throws SQLException {
+    public Optional<Country> findById(int id) throws SQLException {
         return Optional.empty();
     }
 
     @Override
-    public List<City> findByCode(String code) throws SQLException {
+    public List<Country> findByCode(String code) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findByName(String name) throws SQLException {
+    public List<Country> findByName(String name) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findByContinent(String name) throws SQLException {
+    public List<Country> findByContinent(String continent) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findByRegion(String name) throws SQLException {
+    public List<Country> findByRegion(String region) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findByCapital(String name) throws SQLException {
+    public List<Country> findByCapital(String capital) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findAll() throws SQLException {
+    public List<Country> findAll() throws SQLException {
         return List.of();
     }
 
     @Override
-    public City save(City city) throws SQLException {
+    public Country save(Country country) throws SQLException {
         return null;
     }
 
     @Override
-    public void update(City city) throws SQLException {
+    public void update(Country country) throws SQLException {
 
     }
 

@@ -1,39 +1,51 @@
 package se.lexicon.dao;
 
 import se.lexicon.model.City;
+import se.lexicon.model.CountryLanguage;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 public class CountryLanguageDaoImpl implements CountryLanguageDao {
+
+    private CountryLanguage mapRow(ResultSet resultSet) throws SQLException {
+        return new CountryLanguage(
+                resultSet.getString("CountryCode"),
+                resultSet.getString("Language"),
+                resultSet.getBoolean("IsOfficial"),
+                resultSet.getDouble("Percentage")
+        );
+    }
+
     @Override
-    public Optional<City> findById(int id) throws SQLException {
+    public Optional<CountryLanguage> findById(int id) throws SQLException {
         return Optional.empty();
     }
 
     @Override
-    public List<City> findByCode(String code) throws SQLException {
+    public List<CountryLanguage> findByCode(String code) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findByLanguageName(String name) throws SQLException {
+    public List<CountryLanguage> findByLanguageName(String name) throws SQLException {
         return List.of();
     }
 
     @Override
-    public List<City> findAll() throws SQLException {
+    public List<CountryLanguage> findAll() throws SQLException {
         return List.of();
     }
 
     @Override
-    public City save(City city) throws SQLException {
+    public CountryLanguage save(CountryLanguage language) throws SQLException {
         return null;
     }
 
     @Override
-    public void update(City city) throws SQLException {
+    public void update(CountryLanguage language) throws SQLException {
 
     }
 
